@@ -201,11 +201,12 @@
 				bind:this={timebarElement}
 				class='relative'
 			>
-				<mouse-position
-					use:float.ref
-					class='absolute left-0 pointer-events-none w-1  h-full bg-neutral-400'
-					style='left: {timelineX}%'
-				></mouse-position>
+				<div class='absolute w-full h-full overflow-hidden rounded-full'>
+					<mouse-position
+						use:float.ref
+						style='left: {timelineX}%'
+					></mouse-position>
+				</div>
 				<current-time
 					role='progressbar'
 					class='pointer-events-none'
@@ -260,8 +261,19 @@
 		;
 	}
 
+	mouse-position {
+		@apply absolute left-0 pointer-events-none w-1 h-full bg-neutral-400 opacity-0;
+		transition: opacity 200ms ease;
+	}
+
+	video-time:hover {
+		mouse-position {
+			@apply opacity-50;
+		}
+	}
+
 	time-bar {
-		@apply flex w-full h-1.5 bg-neutral-100 mx-8 rounded-full bg-opacity-25 duration-150 overflow-hidden;
+		@apply flex w-full h-1.5 bg-neutral-100 mx-8 rounded-full bg-opacity-25 duration-150;
 	}
 
 	current-time {
