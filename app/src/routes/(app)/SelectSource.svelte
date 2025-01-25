@@ -1,6 +1,9 @@
 <script lang='ts'>
+	import { generalCache } from '$lib/general-settings.svelte'
 	import floatingUI, { portal } from 'floating-runes'
 	import { fly } from 'svelte/transition'
+	import { open as openDialog } from '@tauri-apps/plugin-dialog'
+	import { Shortcuts } from '$lib/shortcuts.svelte'
 
 	interface Props {
 		open: boolean
@@ -9,20 +12,8 @@
 
 	let { float, open }: Props = $props()
 	
-	let videoUrl: string | undefined;
-	async function handleFileSelect(event: Event) {
-		const file = (event.target as HTMLInputElement).files?.[0]
-		if (file) {
-			videoUrl = URL.createObjectURL(file)
-		}
-	}
-
-	let filePicker: HTMLInputElement
-
 </script>
 <!---------------------------------------------------->
-
-<input bind:this={filePicker} hidden type='file' accept='video/*' onchange={handleFileSelect} />
 
 {#if open}
 	<select-source 
@@ -42,7 +33,7 @@
 				<span>Connect</span>
 			</button>
 		</grouped>
-		<button onclick={() => filePicker.click()}>This PC</button>
+		<button onclick={() => Shortcuts.trigger('open_file')}>This PC</button>
 		<button>YouTube</button>
 	</select-source>
 {/if}

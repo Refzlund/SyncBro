@@ -57,7 +57,7 @@
 
 <svelte:window
 	onpointerup={() => isDragging = false}
-	oncontextmenu={(e) => e.preventDefault()}	
+	oncontextmenu={(e) => e.preventDefault()}
 />
 
 <window class:focused={isFocused}>
@@ -102,7 +102,7 @@
 			</button>
 		</actions>
 	</header>
-	<view>
+	<view class='relative'>
 		{@render children()}
 	</view>
 </window>
