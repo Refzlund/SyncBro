@@ -32,6 +32,7 @@ Like synchronizing songs and videos as virtual companionship is an everyday thin
   - [ ] Auto-close app when all torrents are downloaded
 - [ ] Synchronized torrenting: Share a torrent in the shared "space" and watch it together.
 - [ ] Link to room ― https://join.syncbro.app/\[room-id]
+- [ ] Multiple App instances
 
 <br>
 

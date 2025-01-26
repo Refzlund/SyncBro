@@ -3,7 +3,11 @@ declare global {
 		interface ShortcutCommandMap {
 			'toggle_menu_options',
 			'play_pause',
-			'open_file'
+			'open_file',
+			'minimize_to_tray',
+			'minimize',
+			'quit',
+			'fullscreen'
 		}
 	}
 }

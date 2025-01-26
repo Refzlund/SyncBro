@@ -1,3 +1,5 @@
+import { untrack } from 'svelte'
+
 export class Shortcut {
 	name = $state('')
 	command = $state('') as SyncBro.ShortcutCommand
@@ -73,12 +75,14 @@ export class Shortcuts {
 		shortcut: SyncBro.ShortcutCommand,
 		callback: () => void
 	) {
-		subscribers[shortcut] ??= []
-		const array = subscribers[shortcut]
-		array.push(callback)
-		return () => {
-			array.splice(array.indexOf(callback), 1)
-		}
+		return untrack(() => {
+			subscribers[shortcut] ??= []
+			const array = subscribers[shortcut]
+			array.push(callback)
+			return () => {
+				array.splice(array.indexOf(callback), 1)
+			}
+		})
 	}
 }
 
@@ -97,6 +101,21 @@ Shortcuts.add(
 		'Toggle options',
 		'toggle_menu_options',
 		{ key: 'F2' }
+	),
+	new Shortcut(
+		'Quit SyncBro',
+		'quit',
+		{ key: 'q', ctrl: true }
+	),
+	new Shortcut(
+		'Toggle fullscreen',
+		'fullscreen',
+		{ key: 'f' }
+	),
+	new Shortcut(
+		'Minimize SyncBro to tray',
+		'minimize_to_tray',
+		{ key: 't' }
 	)
 )
 

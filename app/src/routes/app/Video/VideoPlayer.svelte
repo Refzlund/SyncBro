@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import { Shortcuts } from '$lib/shortcuts.svelte'
+	import { Shortcut, Shortcuts } from '$lib/shortcuts.svelte'
 	import { onMount } from 'svelte'
 	import { on } from 'svelte/events'
 	import { VideoState } from './video.svelte'
@@ -7,6 +7,8 @@
 	import { formatTime } from '$lib/utility/helpers.svelte'
 	import { generalCache } from '$lib/general-settings.svelte'
 	import Volume from './Volume.svelte'
+	import { getCurrentWindow } from '@tauri-apps/api/window'
+	import { app } from '@tauri-apps/api'
 	
 	interface Props {
 		video: string
@@ -16,6 +18,7 @@
 		video
 	}: Props = $props()	
 
+	let currentWindow = getCurrentWindow()
 	let videoElement = $state() as HTMLVideoElement
 	
 	const videoState = new VideoState(() => video)
@@ -47,17 +50,25 @@
 				}),
 				on(node, 'timeupdate', () => {
 					update()
-				})
+				}),
+				Shortcuts.subscribe(
+					'play_pause', 
+					() => videoElement.paused ? videoElement.play() : videoElement.pause()
+				),
+				Shortcuts.subscribe(
+					'fullscreen',
+					async () => currentWindow.setFullscreen(!await currentWindow.isFullscreen())
+				)
 			]
 			
 			return () => events.forEach(v => v())
 		})
 	}	
 
-	onMount(() => Shortcuts.subscribe(
-		'play_pause', 
-		() => videoElement.paused ? videoElement.play() : videoElement.pause()
-	))
+	let isFullscreen = $state(false)
+	currentWindow.onResized(async () => {
+		isFullscreen = await currentWindow.isFullscreen()
+	})
 
 </script>
 <!---------------------------------------------------->
@@ -70,6 +81,8 @@
 			bind:this={videoElement}
 			use:playerEvents
 			class='size-full'
+			ondblclick={() => Shortcuts.trigger('fullscreen')}
+			onclick={() => Shortcuts.trigger('play_pause')}
 			bind:volume={
 				() => generalCache.enableVolume ? generalCache.volume : 0,
 				v => {
@@ -122,8 +135,12 @@
 					<!-- subtitles -->
 					<!-- picture-in-picture -->
 					<button
-						onclick={() => videoElement.requestFullscreen()}
-						class='iconify size-6 ion--tablet-landscape-outline hover:scale-125 duration-150'
+						onclick={() => Shortcuts.trigger('fullscreen')}
+						class='
+							iconify size-6 ion--tablet-landscape-outline duration-150
+							{isFullscreen ? 'scale-125' : 'scale-100'}
+							{isFullscreen ? 'hover:scale-100' : 'hover:scale-125'}
+						'
 						aria-label='Fullscreen'
 					>
 					</button>

@@ -1,6 +1,7 @@
 {
 	"scripts": {
-		"dev": "cd app && tauri dev"
+		"dev": "cd app && tauri dev",
+		"build": "cd app && tauri build"
 	},
 	"license": "Prosperity-NC",
 	"workspaces": [

@@ -3,6 +3,7 @@
 	import { onMount, type Snippet } from 'svelte'
 	import Center from './Center.svelte'
 	import { addListener, noPropagation } from '../../lib/utility/helpers.svelte'
+	import Tray from '../Tray.svelte'
 
 	const window = getCurrentWindow()
 
@@ -44,10 +45,12 @@
 
 	window.onMoved(() => windowMovedAt = Date.now())
 
-
+	
 
 </script>
 <!---------------------------------------------------->
+
+<Tray />
 
 <svelte:head>
 	{#if isDragging}
