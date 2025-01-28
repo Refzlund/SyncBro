@@ -24,7 +24,6 @@
 
 	let closeTimer: ReturnType<typeof setTimeout> | undefined
 
-	let clickRateLimit: ReturnType<typeof setTimeout> | undefined
 	let stayOpenRateLimit: ReturnType<typeof setTimeout> | undefined
 
 	function closeTrayMenu(cb?: () => void) {
@@ -44,14 +43,29 @@
 		appWindow = (await WebviewWindow.getByLabel('app'))!
 
 		tray = await TrayIcon.new({
-			tooltip: 'Open SyncBro',
+			tooltip: `           SyncBro
+Left	Open
+Middle	Play/Pause
+Right	Menu`,
 			icon: (await defaultWindowIcon())!,
 			async action(event) {
+				console.log(event)
 				if(event.type === 'Click') {
-					if(clickRateLimit !== undefined) return
-					if(stayOpenRateLimit !== undefined) return
+					if(event.buttonState === 'Up') return
+					if(event.button === 'Middle') {
+						// Toggle media playing
+					}
+					if(event.button === 'Left') {
+						if(!await appWindow.isVisible()) {
+							appWindow.show()
+						}
+						appWindow.setFocus()
+						return
+					}
 
-					clickRateLimit = setTimeout(() => { clickRateLimit = undefined }, 33)
+					// * Open tray menu
+
+					if(stayOpenRateLimit !== undefined) return
 
 					if(closeTimer !== undefined) {
 						clearTimeout(closeTimer)
@@ -130,12 +144,6 @@
 						clearCreated.then(v => v())
 						console.error('Failed opening tray menu:', e)
 					})
-				}
-				if(event.type === 'DoubleClick') {
-					if(!await appWindow.isVisible()) {
-						appWindow.show()
-					}
-					appWindow.setFocus()
 				}
 			}
 		})

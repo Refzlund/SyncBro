@@ -1,17 +1,25 @@
+<script module lang='ts'>
+	
+	export const instanceState = $state({
+		isFullscreen: false
+	})
+	
+</script>
+
 <script lang='ts'>
 	import { getCurrentWindow } from '@tauri-apps/api/window'
-	import { onMount, type Snippet } from 'svelte'
+	import { onMount, tick, type Snippet } from 'svelte'
 	import Center from './Center.svelte'
 	import { addListener, noPropagation } from '../../lib/utility/helpers.svelte'
 	import Tray from '../Tray.svelte'
 
-	const window = getCurrentWindow()
+	const currentWindow = getCurrentWindow()
 
 	let isFocused = $state(true)
-	window.onFocusChanged((e) => isFocused = e.payload)
+	currentWindow.onFocusChanged((e) => isFocused = e.payload)
 
-	onMount(() => {
-		window.isFocused().then((focused) => isFocused = focused)
+	onMount(async () => {
+		await currentWindow.isFocused().then((focused) => isFocused = focused)
 	})
 	
 	interface Props {
@@ -32,7 +40,7 @@
 		}
 		const start = () => {
 			isDragging = true
-			window.startDragging()
+			currentWindow.startDragging()
 			windowMovedAt = Date.now()
 			clean = addListener(document, 'pointermove', (e) => {
 				if (windowMovedAt > Date.now() - 50) return
@@ -43,9 +51,20 @@
 		addListener(document, 'pointerup', end, { once: true })
 	}
 
-	window.onMoved(() => windowMovedAt = Date.now())
+	currentWindow.onMoved(() => windowMovedAt = Date.now())
 
-	
+	let escape: (() => void) | undefined
+	currentWindow.onResized(async () => {
+		escape?.()
+		instanceState.isFullscreen = await currentWindow.isFullscreen()
+		if(instanceState.isFullscreen) {
+			escape = addListener(document, 'keydown', e => {
+				if(e.key === 'Escape') {
+					currentWindow.setFullscreen(false)
+				}
+			}, { once: true })
+		}
+	})
 
 </script>
 <!---------------------------------------------------->
@@ -63,14 +82,14 @@
 	oncontextmenu={(e) => e.preventDefault()}
 />
 
-<window class:focused={isFocused}>
+<window class:focused={isFocused} class:fullscreen={instanceState.isFullscreen}>
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<header 
 		onpointerdown={drag} 
 		ondblclick={e => {
 			const target = e.target as HTMLElement
 			if (target.tagName === 'BUTTON') return
-			window.toggleMaximize()
+			currentWindow.toggleMaximize()
 		}}
 	>
 		<h4 id='title' class='flex gap-3'>
@@ -82,7 +101,7 @@
 			<button 
 				id='window-minimize' 
 				onpointerdowncapture={noPropagation} 
-				onclick={window.minimize} 
+				onclick={currentWindow.minimize} 
 				aria-label='Minimize window'
 			>
 				<span class='ion--remove-outline'></span>
@@ -90,7 +109,7 @@
 			<button 
 				id='window-maximize' 
 				onpointerdowncapture={noPropagation} 
-				onclick={window.toggleMaximize} 
+				onclick={currentWindow.toggleMaximize} 
 				aria-label='Maximize window'
 			>
 				<span class='ion--scan-outline'></span>
@@ -98,7 +117,7 @@
 			<button 
 				id='window-close' 
 				onpointerdowncapture={noPropagation} 
-				onclick={window.close} 
+				onclick={currentWindow.close} 
 				aria-label='Close window'
 			>
 				<span class='ion--close-outline'></span>
@@ -146,6 +165,10 @@
 	
 	window {
 		@apply grid grid-rows-[40px,1fr] h-screen;
+
+		&.fullscreen {
+			@apply grid-rows-[0px,1fr];
+		}
 	}
 
 	header {

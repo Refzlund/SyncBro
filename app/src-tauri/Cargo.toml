@@ -25,3 +25,4 @@ serde_json = "1"
 tauri-plugin-fs = "2"
 tempfile = "3"
 tauri-plugin-dialog = "2"
+# Deep link https://v2.tauri.app/plugin/deep-linking/

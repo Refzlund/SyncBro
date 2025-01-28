@@ -86,6 +86,22 @@
 <!---------------------------------------------------->
 <style lang='postcss'>
 	
+	modal-content {
+		@apply overflow-auto pr-4;
+		&::-webkit-scrollbar {
+			@apply size-1.5;
+		}
+
+		&::-webkit-scrollbar-track {
+			@apply bg-neutral-500 rounded-full bg-opacity-25;
+		}
+		&::-webkit-scrollbar-thumb {
+			@apply bg-neutral-400 bg-opacity-40 rounded-full hover:bg-opacity-80;
+		}
+
+
+	}
+
 	float {
 		@apply absolute h-0.5 bg-primary-400 rounded-full left-0 scale-100;
 		transition: 
@@ -111,7 +127,7 @@
 		@apply 
 			bg-neutral-800 h-full py-4 rounded-lg px-6 min-w-96
 			border border-neutral-200 border-opacity-10	bg-opacity-85 backdrop-blur-lg
-			grid grid-rows-[auto,1fr,auto] gap-6
+			grid grid-rows-[auto,1fr,auto] gap-2
 		;
 
 		transition: 250ms ease-out;
@@ -131,7 +147,7 @@
 	}
 
 	modal-header {
-		@apply flex items-center;
+		@apply flex items-center mb-2.5;
 		> button {
 			@apply text-neutral-400 duration-150 ml-auto;
 			&:hover {

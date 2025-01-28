@@ -7,7 +7,12 @@ declare global {
 			'minimize_to_tray',
 			'minimize',
 			'quit',
-			'fullscreen'
+			'fullscreen',
+			'rewind_10s',
+			'forward_10s',
+			'previous_frame',
+			'next_frame',
+			'toggle_mute'
 		}
 	}
 }

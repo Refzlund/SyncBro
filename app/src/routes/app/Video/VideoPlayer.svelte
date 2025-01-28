@@ -4,11 +4,12 @@
 	import { on } from 'svelte/events'
 	import { VideoState } from './video.svelte'
 	import Timeline from './Timeline.svelte'
-	import { formatTime } from '$lib/utility/helpers.svelte'
+	import { addListener, formatTime } from '$lib/utility/helpers.svelte'
 	import { generalCache } from '$lib/general-settings.svelte'
 	import Volume from './Volume.svelte'
 	import { getCurrentWindow } from '@tauri-apps/api/window'
 	import { app } from '@tauri-apps/api'
+	import { instanceState } from '../+layout.svelte'
 	
 	interface Props {
 		video: string
@@ -65,10 +66,7 @@
 		})
 	}	
 
-	let isFullscreen = $state(false)
-	currentWindow.onResized(async () => {
-		isFullscreen = await currentWindow.isFullscreen()
-	})
+	
 
 </script>
 <!---------------------------------------------------->
@@ -82,7 +80,6 @@
 			use:playerEvents
 			class='size-full'
 			ondblclick={() => Shortcuts.trigger('fullscreen')}
-			onclick={() => Shortcuts.trigger('play_pause')}
 			bind:volume={
 				() => generalCache.enableVolume ? generalCache.volume : 0,
 				v => {
@@ -138,8 +135,8 @@
 						onclick={() => Shortcuts.trigger('fullscreen')}
 						class='
 							iconify size-6 ion--tablet-landscape-outline duration-150
-							{isFullscreen ? 'scale-125' : 'scale-100'}
-							{isFullscreen ? 'hover:scale-100' : 'hover:scale-125'}
+							{instanceState.isFullscreen ? 'scale-125' : 'scale-100'}
+							{instanceState.isFullscreen ? 'hover:scale-100' : 'hover:scale-125'}
 						'
 						aria-label='Fullscreen'
 					>

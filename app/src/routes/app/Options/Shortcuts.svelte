@@ -11,7 +11,11 @@
 		
 	}: Props = $props()
 
+	const iconKeys = [
+		'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'
+	]
 	function shortcutText(shortcut: Shortcut) {
+		if(iconKeys.includes(shortcut.key)) return ''
 		switch (shortcut.key) {
 			case ' ':
 				return 'Space'
@@ -108,11 +112,22 @@
 						<span class='iconify ion--stop-outline'></span>
 					</span>
 				{:else}
+					{#if iconKeys.includes(shortcut.key)}
+						{@const k = shortcut.key}
+						<span class='
+							iconify size-3.5 {
+							  k == 'ArrowLeft' ? 'ion--arrow-left-c' 
+							: k == 'ArrowRight' ? 'ion--arrow-right-c'
+							: k == 'ArrowUp' ? 'ion--arrow-up-c'
+							: k == 'ArrowDown' ? 'ion--arrow-down-c'
+							: ''
+						}'></span>
+					{/if}
 					{#if shortcut.meta}
 						<span class='iconify ion--logo-windows-outline size-3.5'></span>
 					{/if}
 					{#if shortcut.shift}
-						Shift
+						<span class='iconify ion--arrow-up-a size-3.5'></span>
 					{/if}
 					{#if shortcut.ctrl}
 						Ctrl

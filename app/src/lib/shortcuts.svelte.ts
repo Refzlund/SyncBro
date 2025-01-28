@@ -116,6 +116,27 @@ Shortcuts.add(
 		'Minimize SyncBro to tray',
 		'minimize_to_tray',
 		{ key: 't' }
+	),
+	new Shortcut(
+		'Rewind 10 seconds',
+		'rewind_10s',
+		{ key: 'ArrowLeft' }
+	),
+	new Shortcut(
+		'Forward 10 seconds',
+		'forward_10s',
+		{ key: 'ArrowRight' }
+	),
+	new Shortcut(
+		'Previous frame',
+		'previous_frame',
+		{ key: ',' }
+	),
+	new Shortcut(
+		'Next frame',
+		'next_frame',
+		{ key: '.' }
 	)
+
 )
 
